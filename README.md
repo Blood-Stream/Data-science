@@ -1,92 +1,90 @@
 # Bloodstream Data Science Documentation
 
-## Introducción al Algoritmo de Recomendaciones
+## Introduction to the Recommendation Algorithm
 
-El algoritmo de recomendaciones de Bloodstream crea las mejores experiencias de usario para sus miembros. La siguiente arquitectura de datos es la que entrega esta experiencia, así como apoyo rápido. De tal forma que puede lidiar con grandes volúmenes de data, siendo responsivo a las interacciones de los usuarios y facilitar recomendaciones:
+
+Bloodstream recommendation algorithm creates the best user experiences for its users. The following data structure is behind it, allowing to execute fastly. In this way it's capable of dealing with large chunks of data, being resposive to interactions while easing recommendations:
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Untitled.png](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Untitled.png)
 
-El diagrama esta dividido en tres partes:
+The diagram is divided in three parts:
 
-***Tareas offline (Model training)***: donde se guarda la data para procesamiento offline.
+***Tareas offline (Model training)***: where data is storaged for later offline processing.
 
-***Tareas online (UX)***: que responde en tiempo real a los eventos e interacciones del usuario.
+***Tareas online (UX)***: that responds in real time to users' events and interactions.
 
-***Tareas nearline (Backup):*** que puede ejecutar tareas online, sin tener la responsabilidad directa de funcionar en tiempo real. 
+***Tareas nearline (Backup):*** that can execute online tasks, without having the direct duty to function in real time.
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/DS_Bloodstream_Algorithm_-_distribution.jpg](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/DS_Bloodstream_Algorithm_-_distribution.jpg)
 
-## Computación Online (UX)
+## Online Computing
 
-Con computación online, podemos responder rápido a los eventos y el uso reciente del cliente. Por ejemplo, generando una galería de videojuegos que se le recomiendan al usuario. Estos componentes están sujetos a disponibilidad y tiempo de respuesta que se entrega al cliente. 
+With online computing we can respond fastly to events and the recent client's interaction. For instance, generating a videogames gallery for user recommendation sake. this components are subject to availability and time response that is delivered to the client. 
 
-Este nivel dentro del diagrama permite tener varias fuentes de datos disponibles, pero requiere de soporte de computación nearline y offline. 
+This level within the diagram allows to have several data sources, but requires support from offline and nearline computation. 
 
-## Computación Offline (Model Training)
+## Offline Computation (Model Training)
 
-La computación offline permite operar con más opciones algorítmicas. Por ejemplo, acá se generan estadísticas periódicas de los videojuegos mejores valorados y métricas. Este nivel requiere menos tiempo de respuesta que su par online. Nuevos algoritmos pueden ser desplegados a producción sin muchos requerimientos en el desempeño. 
+Offline computation allos to operate more algorithmic options. For instance, here periodic statistics and metrics of the the best-rated videogames are generated. This level requires less response time compared to the online side. New algorithms can be deployed withouch much performance requirements. 
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Offline_jobs.jpg](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Offline_jobs.jpg)
 
-Esta infraestructura permite realizar experimentos dentro de un ambiente ágil, sin comprometer la experiencia de usuario. Así mismo, permite almacenar datos y entrenar al modelo de recomendaciones.
+This infraestructure allows to perform experiments within an agil environment without compromising the user experience. Likewise, allows to storage data and train recommendation models. 
 
 ## Computación Nearline (Backup)
 
-La computación nearline permite comprometer los dos módulos previos. En gran medida, este backup funciona como su par online. Sin embargo, no está a cargo de mandar resultados al cliente. Más bien, los almacena para permitir un modelo asíncrono. 
+Nearline computation allows to compromise the latter modules. In a way, it's a backup for the online side. However, it's not in charge of sending results to the client side. Rather, it storages data to allow an async model. 
 
-Este nivel sirve para responder a eventos de usuario. Por ejemplo, guarda información como la valoración reciente de usuarios. 
+This level serves to respond to users' events. For instance, it storages data as recent user's rating. 
 
 ## Machine Learning
 
-La mayor parte del machine learning se realiza en la parte offline de la arquitectura. Esto permite que las tareas puedan ser programadas para ser ejecutadas periódicamente, ofreciendo un modelo asíncrono entre el servidor y el cliente. 
+Most of machine learning happens on the offline side of the architecture. This allows tasks to be scheduled to be exectured periodically, generating an async model amid the server and the client. 
 
-En este sentido, tenemos dos elementos a observar:
+In this sense, we have to models:
 
-- ***Model training***: recolectamos data disponible y aplicamos algoritmos de machine learning para fijar parámetros. Este modelo es programado y almacenado para computación posterior. Aunque la mayoría de los modelos serán entrenados offline, se utilizan también algunos algoritmos de machine learning online.
-- ***Batch computation:*** usamos modelos existentes y los alimentamos con la data correspondiente, generando resultados que serán mostrados posteriormente en las recomendaciones.
+- ***Model training***: we collect data and apply it to machine learning algorithms to fix parameters. This model is programmed and storaged for later computation. Although most models are trained offline, online algorithms are also executed online.
+- ***Batch computation:*** we use existing models and feed them the corresponding data, generating results that are going to be latter delivered. 
 
-Para las funciones de estos modelos, se necesitarán utilizar datos limpios que son generados por las queries de la base de datos. Las queries deben de poder correr sobre grandes cantidades de datos y de forma distribuida. 
+For the functionalities of these mdoels, we need clean data to generate queries in the database. Queries should run large data on a distributed fashion. 
 
-Hecho lo anterior, usamos un mecanismo para publicar los resultados:
+With this, we use a mechanism to publish results:
 
-1. Notificación al usuario cuando la recomendación está lista. 
-2. Soporte a varios repositorios. 
-3. Manejo de errores, que permita monitoreo y alertas
+1. User notifications when the recommendation is ready.
+2. Support to several repositories.
+3. Error handing, that allows monitoring and alerts.
 
-## Filtros Colaborativos
+## Signals and Models
 
-En principio se implementan ***filtros colaborativos*** para ******los sistemas de recomendación. Estos se basan en el hecho de que si hay dos personas (X y Y) en un mismo sistema y tienen gustos similares, entonces recomendarle a X juegos que le gusten a Y será de gran relevancia, en contraste a simplemente darle una opción aleatoria.
+Our model manages three input types:
 
-Contando con una gran cantidad de datos se usa algoritmos de recomendación rápida y eficiente. Por ejemplo: guardando gustos en una matriz binaria.
-
-## Señales y Modelos
-
-Nuestro modelo maneja tres tipos de inputs:
-
-- ***Modelos***: archivos de parametros que han sido entrenados offline.
-- ***Datos:*** información procesada que ha sido guardada en la base de datos.
-- ***Señales***: información nueva para los algoritmos, que se obtiene del usuario en tiempo real.
+- ***Modelos***: trained parameter files.
+- ***Datos:*** processed data that is storaged in the database.
+- ***Señales***: data for algorithms, that is extracted from the user in real time.
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Sings_models.jpg](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Sings_models.jpg)
 
-## Distribución de Datos y Eventos
+## Data and Events Distribution
 
-Nuestro objetivo es convertir interacciones en información que ayude a mejorar la experiencia de usuario. Por ello, las interfaces no solo tienen una estrategia sólida de UX sino que recolectan data de la mayor cantidad de eventos. Por ejemplo, clics, búsquedas, vistas o likes. De tal forma que los eventos pueden ser agregados a una base de datos para nuestros algoritmos. 
+Our goal is to turn interactions into data that allows the best UX. For this purpose, interfaces not only follow a solid UI strategy byt collect data from the largest number of events. For instance, clicks, searches, visits or likes. this way, events can be added to the database for our algorithms. 
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Event_data_distribution.jpg](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Event_data_distribution.jpg)
 
-En este sentido, los eventos son pequeñas unidades de tiempo e información que son procesadas y almacenadas para un análisis posterior. La arquitectura de recomendaciones depende de computación distribuida y el data flow manejado por sistemas de logging para las partes iniciales del proceso. 
 
-## Resultados de Recomendaciones
+In this sense, events are short time and info units that are processed and storaged for later analysis. Recommendation architecture depends on distributed computation and data flow that is managed by the logging systems for the starting parts of the process. 
 
-Los algoritmos de machine learning tienen el objetivo de realizar recomendaciones personalizadas.  Estas son dadas directamente desde listas que han sido computadas anteriormente. Esto es resultado de una combinación entre recomendaciones hechas offline y listas post-procesadas con algoritmos que leen señales en tiempo real. 
+## Recommendation Results
+
+Our machine learnign algorithms have the goal to generate personalized recommendations. These are given from lists that have been computed beforehand. This is result of the combinaiton amid offline recommendations and post-processed lists with algorithms that read signs in real time.
 
 ![Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Recommendations.jpg](Bloodstream%20Data%20Science%20Documentation%202364fb87b0584eb99afe52821e9382e9/Recommendations.jpg)
 
-Varios repositorios son almacenados offline y en el backup para ser consumidas al momento de las peticiones. El objetivo principal de las bases de datos no es almacenar datos, sino manejar requerimientos. 
+Several repositories are storaged offline and the backup is consuments at the time of requests. The main objective of the data bases is not only to storage data, but to manage requests. 
 
-## Últimas Observaciones
+## Last Observations
 
 El fin de esta arquitectura de datos es usar algoritmos sofisticados de machine learning que permitan escalamiento y manejo de Big data. Permitiendo también innovación ágil y flexible. Todo esto para generar resultados rápidos a los datos y eventos generados por los usuarios. 
+
+The goal of this data architecture is to use sophistiated machine learning algorithms that allow escalation and Big data management, in order to trigger agile and flexible innovation. All the latter to generate fast data results and events generated by users.
 
 ---
